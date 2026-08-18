@@ -1,5 +1,4 @@
 import streamlit as st
-from supabase import create_client
 from st_login_form import login_form
 
 # Page Config
@@ -10,20 +9,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# Connect to Supabase using Streamlit secrets
-SUPABASE_URL = st.secrets["supabase"]["url"]
-SUPABASE_KEY = st.secrets["supabase"]["key"]
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
-
-# 1. Authentication Check
+# 1. Authentication Check using st-login-form
 if "authenticated" not in st.session_state or not st.session_state["authenticated"]:
     st.markdown("<h1 style='text-align: center;'>⚡ Neo AI Portal</h1>", unsafe_allow_html=True)
     st.markdown("<p style='text-align: center; color: gray;'>Sign in or create an account to access your workspace</p>", unsafe_allow_html=True)
     
-    # Render Supabase Login/Signup Form Component
-    login_form(supabase=supabase, title="Authentication", 
-               auth_types=["email"], 
-               allow_guest=False)
+    # Corrected function call (reads from secrets.toml automatically)
+    supabase = login_form(title="Authentication")
     st.stop()
 
 # --- MAIN APP (Only visible if logged in) ---
